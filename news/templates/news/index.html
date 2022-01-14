@@ -9,5 +9,32 @@
 {% endblock %}
 
 {% block content %}
-    {% include 'inc/_content.html' %}
+    <br>
+    {% for item in news %}
+        <div class="card mb-3">
+            <div class="card-header">
+                Категория: <a href="{{ item.category.get_absolute_url }}">{{ item.category }}</a>
+            </div>
+            <div class="card-body">
+                <div class="media">
+                    {% if item.photo %}
+                        <img src="{{ item.photo.url }}" alt="" width="350" class="mr-3">
+                    {% else %}
+                        <img src="https://brilliant24.ru/files/cat/template_01.png" alt="" width="300"
+                             class="mr-3">
+                    {% endif %}
+                    <div class="media-body">
+                        <h5 class="card-title">{{ item.title }}</h5>
+                        <p class="card-text">{{ item.content|safe|linebreaks|truncatewords:44 }}</p>
+                        <a href="{{ item.get_absolute_url }}" class="btn btn-primary">Read more...</a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-footer text-muted">
+                Опубликовано:
+                {{ item.created_at|date:'Y-m-d H:i' }}
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}
