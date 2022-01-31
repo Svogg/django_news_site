@@ -1,15 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.views.generic import ListView
 from .models import News, Caregory
 from .forms import NewsForm
 from django.http import Http404
+
+
+class HomeNews(ListView):
+    model = News
+    template_name = 'news/home_news_list.html'
 
 
 def index(request):
     news = News.objects.all()
     context = {'news': news,
                'title': 'Список новостей',
-    }
+               }
     return HttpResponse(render(request, 'news/index.html', context))
 
 
@@ -35,7 +41,8 @@ def add_news(request):
     if request.method == 'POST':
         form = NewsForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
+            news = form.save()
+            return redirect(news)
     else:
         form = NewsForm()
     return render(request, 'news/add_news.html', {'form': form})
