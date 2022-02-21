@@ -1,3 +1,7 @@
 body{
-    background-color: #ccc;
+    color: black;
+}
+
+.errorlist{
+    color: red;
 }
