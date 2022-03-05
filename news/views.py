@@ -3,6 +3,7 @@
 from django.views.generic import ListView, DetailView, CreateView
 from .models import News, Caregory
 from .forms import NewsForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 # from django.http import Http404
 
 
@@ -17,7 +18,7 @@ class HomeNews(ListView):
         return context
     
     def get_queryset(self):
-        return News.objects.filter(is_published=True)
+        return News.objects.filter(is_published=True).select_related('category')
 
 
 # def index(request):
@@ -41,7 +42,7 @@ class NewsByCategory(ListView):
     
     def get_queryset(self):
         return News.objects.filter(category_id=self.kwargs['category_id'],
-                                   is_published=True)
+                                   is_published=True).select_related('category')
     
 
 # def get_category(request, category_id):
@@ -67,9 +68,10 @@ class ViewNews(DetailView):
 #         raise Http404('No Model matches the given query.')
 #     return render(request, 'news/view_news.html', {'news_item': news_item})
 
-class CreateNews(CreateView):
+class CreateNews(LoginRequiredMixin, CreateView):
     form_class = NewsForm
     template_name = 'news/add_news.html'
+    raise_exception = True
 
 # def add_news(request):
 #     if request.method == 'POST':
